@@ -13,19 +13,20 @@ template <typename T>
 void register_array(tcnn::GPUMatrixDynamic<T> &matrix, bool input = false, bool output = false) {
   managedMatrices.push_back(&matrix);
 
-  memopt::registerManagedMemoryAddress(matrix.data(), matrix.n_bytes());
+  memopt::MemoryManager::getInstance().registerManagedMemoryAddress(matrix.data(), matrix.n_bytes());
   if (input) {
-    memopt::registerApplicationInput(matrix.data());
+    memopt::MemoryManager::getInstance().registerApplicationInput(matrix.data());
   }
   if (output) {
-    memopt::registerApplicationOutput(matrix.data());
+    memopt::MemoryManager::getInstance().registerApplicationOutput(matrix.data());
   }
 }
 
 inline size_t total_registered_array_bytes() {
   size_t bytes = 0;
-  for (const auto &[_, size] : memopt::MemoryManager::managedMemoryAddressToSizeMap) {
-    bytes += size;
+  const auto& memoryInfos = memopt::MemoryManager::getInstance().getMemoryArrayInfos();
+  for (const auto& info : memoryInfos) {
+    bytes += info.size;
   }
   return bytes;
 }
