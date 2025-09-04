@@ -49,6 +49,10 @@
 2. **Repeated Graph Support**: Ensure same arrays resident at begin/end of iterations
 3. **New Architecture**: Migrate to executor_v2 and new MemoryManager
 4. **Memory Fix**: Resolve dual ownership between FRUGAL and tiny-cuda-nn
+5. **Launch Graph Reimplementation**: Eventually need to reimplement `executeGraphRepeatedly` for iterative optimization
+   - Current implementation launches full graph repeatedly (100 iterations)
+   - For demonstration purposes, could be simplified to 1 iteration to focus on iterative optimization mechanics
+   - Would enable testing optimize/shrink/enlarge cycle without long execution times
 
 ### Why Postponed
 - Current implementation sufficient for research validation
