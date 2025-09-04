@@ -271,10 +271,14 @@ int main(int argc, char* argv[]) {
 
   // Dump final image if a name was specified
 	if (argc >= 5) {
+		printf("[DEBUG] Starting inference for image generation (argc=%d, argv[4]=%s)\n", argc, argv[4]);
 		network->inference(inference_stream, inference_batch, prediction);
+		printf("[DEBUG] Inference completed, saving image to %s\n", argv[4]);
 		save_image(prediction.data(), sampling_width, sampling_height, 3, n_output_dims, argv[4]);
+		printf("[DEBUG] Image saved successfully to %s\n", argv[4]);
 	}
 
+	printf("[DEBUG] Starting free_all_gpu_memory_arenas()\n");
 	free_all_gpu_memory_arenas();
 
 	CUDA_CHECK_THROW(cudaFree(base_step));
