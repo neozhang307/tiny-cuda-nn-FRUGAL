@@ -2,13 +2,13 @@
   "execution": {
     "mainDeviceId": 0,
     "measurePeakMemoryUsage": true,
-    "enableDebugOutput": false,
+    "enableDebugOutput": true,
     "enableVerboseOutput": false,
     "storageDeviceId": 2,
     "useNvlink": false
   },
   "generic": {
-    "availableMemoryForUMInMiB": 51131,
+    "availableMemoryForUMInMiB": 80000,
     "optimize": true,
     "repeat": 1,
     "useUM": false,
@@ -33,7 +33,7 @@
     "byPassingFirstStep": false,
     "enableGapOverlap": true,
     "gapOverlapDecayFactor": 0.5,
-    "firstStepSolverType": "BRUTE_FORCE",
+    "firstStepSolverType": "BRANCH_AND_BOUND",
     "enableEarlyTermination": true,
     "maxSolverIterations": 1000000,
     "beamWidth": 100,
@@ -43,7 +43,7 @@
     "solver": "GUROBI_MIXED_INTEGER_PROGRAMMING",
     "maxPeakMemoryUsageInMiB": 0,
     "weightOfPeakMemoryUsage": 1,
-    "weightOfTotalRunningTime": 0.1,
+    "weightOfTotalRunningTime": 0.00001,
     "weightOfNumberOfMigrations": 0.01,
     "prefetchLookbackDistanceLimit": 30,
     "prefetchLookbackTimeBudgetFactor": 50.0,
@@ -52,11 +52,13 @@
     "gurobiTimeLimitSeconds": 60,
     "gurobiMipGap": 0.10,
     "gurobiThreads": 0,
-    "gurobiEnableHeuristics": true
+    "gurobiEnableHeuristics": true,
+    "disableLookahead": false,
+    "disableLookback": false
   },
   "tiledCholesky": {
     "mode": 0,
-    "n": 40960,
+    "n": 102400,
     "t": 4
   }
 }

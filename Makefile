@@ -30,7 +30,7 @@ clean:
 
 .PHONY: run
 run:
-	./build/mlp_learning_an_image data/images/albert.jpg tcnnConfig.json 100 inference.jpg
+	./build/mlp_learning_an_image data/images/albert.jpg tcnnConfig.json 1 inference.jpg
 
 .PHONY: run-steps
 run-steps:

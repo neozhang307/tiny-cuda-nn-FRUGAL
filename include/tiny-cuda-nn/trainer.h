@@ -41,6 +41,7 @@
 #include <tiny-cuda-nn/random.h>
 #include <tiny-cuda-nn/reduce_sum.h>
 
+#include <chrono>
 #include <random>
 
 namespace tcnn {
@@ -225,7 +226,14 @@ class Trainer : public ObjectWithMutableHyperparams {
     CUDA_CHECK_THROW(cudaGraphDebugDotPrint(m_graph.graph(), "graph.dot", cudaGraphDebugDotFlagsVerbose));
 
     if (memopt::ConfigurationManager::getConfig().generic.optimize) {
+      // Start timing the preprocessing (profiling and optimization) phase
+      std::chrono::steady_clock::time_point preprocess_start = std::chrono::steady_clock::now();
+      
       auto optimized_graph = memopt::profileAndOptimize(m_graph.graph());
+      
+      std::chrono::steady_clock::time_point preprocess_end = std::chrono::steady_clock::now();
+      float preprocessing_time = std::chrono::duration_cast<std::chrono::microseconds>(preprocess_end - preprocess_start).count() / 1000000.0f;
+      printf("FRUGAL preprocessing time (profiling + optimization) (s): %.6f\n", preprocessing_time);
 
       // TODO: Reset parameters after profiling
 
@@ -260,7 +268,10 @@ class Trainer : public ObjectWithMutableHyperparams {
         for (auto matrix : memopt_adapter::managedMatrices) {
           if (sum + matrix->n_bytes() > available) break;
           sum += matrix->n_bytes();
-          CUDA_CHECK_THROW(cudaMemPrefetchAsync(((GPUMatrixDynamic<COMPUTE_T>*)matrix)->data(), matrix->n_bytes(), memopt::ConfigurationManager::getConfig().execution.mainDeviceId, stream));
+          // Skip prefetching to GPU - keep memory on CPU at start for unified memory testing
+          // CUDA_CHECK_THROW(cudaMemPrefetchAsync(((GPUMatrixDynamic<COMPUTE_T>*)matrix)->data(), matrix->n_bytes(), memopt::ConfigurationManager::getConfig().execution.mainDeviceId, stream));
+          // Optional: Explicitly prefetch to CPU to ensure it's on CPU side
+          CUDA_CHECK_THROW(cudaMemPrefetchAsync(((GPUMatrixDynamic<COMPUTE_T>*)matrix)->data(), matrix->n_bytes(), cudaCpuDeviceId, stream));
         }
         CUDA_CHECK_THROW(cudaStreamSynchronize(stream));
       }

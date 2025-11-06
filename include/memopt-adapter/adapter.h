@@ -15,10 +15,10 @@ void register_array(tcnn::GPUMatrixDynamic<T> &matrix, bool input = false, bool 
 
   memopt::MemoryManager::getInstance().registerManagedMemoryAddress(matrix.data(), matrix.n_bytes());
   if (input) {
-    memopt::MemoryManager::getInstance().registerApplicationInput(matrix.data());
+    // memopt::MemoryManager::getInstance().registerApplicationInput(matrix.data());
   }
   if (output) {
-    memopt::MemoryManager::getInstance().registerApplicationOutput(matrix.data());
+    // memopt::MemoryManager::getInstance().registerApplicationOutput(matrix.data());
   }
 }
 
